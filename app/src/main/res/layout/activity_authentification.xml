@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".authentification">
+
+
+    <EditText
+        android:id="@+id/edit_text_codeVisiteur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Code Visiteur" />
+
+    <Button
+        android:id="@+id/btn_valideCodeVisiteur"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="70px"
+        android:text="Valider  code  visiteur"
+        />
+
+    <EditText
+        android:id="@+id/edit_text_cleSecrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Clé secrète"
+        />
+
+    <Button
+        android:id="@+id/edit_btn_valideCleSecrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="70px"
+        android:text="Valider  clé  secrète"
+        />
+
+</LinearLayout>

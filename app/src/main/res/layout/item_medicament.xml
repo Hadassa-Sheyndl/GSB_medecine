@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical">
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Code CIS : "
+    android:textStyle="bold"
+    android:id="@+id/text_view_CodeCIS" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Denomination : "
+    android:textStyle="bold"
+    android:id="@+id/text_view_Denomination" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Forme pharmaceutique : "
+    android:textStyle="bold"
+    android:id="@+id/text_view_Forme_Pharmaceutique" />
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Voies d'administration : "
+    android:textStyle="bold"
+    android:id="@+id/text_view_Voies_admin" />
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Titulaires : "
+    android:textStyle="bold"
+    android:id="@+id/text_view_titulaires" />
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Statut administratif : "
+    android:textStyle="bold"
+    android:id="@+id/text_view_statutAdmin" />
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Nombres de molecules : "
+    android:textStyle="bold"
+    android:id="@+id/text_view_nbMolecules" />
+</LinearLayout>
