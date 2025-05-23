@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".authentification">
+    tools:context=".Authentification">
 
 
     <EditText
@@ -17,27 +17,35 @@
 
     <Button
         android:id="@+id/btn_valideCodeVisiteur"
+        android:onClick="afficherLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_margin="70px"
         android:text="Valider  code  visiteur"
         />
-
-    <EditText
-        android:id="@+id/edit_text_cleSecrete"
+    <LinearLayout
+        android:id="@+id/layoutKey"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Clé secrète"
-        />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/edit_btn_valideCleSecrete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_margin="70px"
-        android:text="Valider  clé  secrète"
-        />
+        <EditText
+            android:id="@+id/edit_text_cleSecrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Clé secrète"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="70px"
+            android:onClick="comparerCles"
+            android:text="Valider  clé  secrète"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

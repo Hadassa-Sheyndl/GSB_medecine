@@ -134,31 +134,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         selectionArgs.add("%" + formePharmaceutique + "%");
         selectionArgs.add("%" + titulaires + "%");
         selectionArgs.add("%" + removeAccents(denominationSubstance) + "%");
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase(); // fonction qui permet d'avoir acces a la base de donnees
         String finSQL ="";
         if (!voiesAdmin.equals(PREMIERE_VOIE)) { //ds le cas ou le user a entrer qqch ds la barre de recherche
-            finSQL = "AND Voies_dadministration LIKE ?";
+            finSQL = "AND Voies_dadministration LIKE ?"; //je rajoute a la requete SQL
             selectionArgs.add("%" + voiesAdmin + "%");
         }
-        String SQLSubstance = "SELECT CODE_CIS FROM CIS_COMPO_bdpm WHERE replace(... LIKE ?";
+        String SQLSubstance = "SELECT CODE_CIS FROM CIS_COMPO_bdpm WHERE replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(upper(Denomination_substance), 'Â','A'),'Ä','A'),'À','A'),'É','E'),'Á','A'),'Ï','I'), 'Ê','E'),'È','E'),'Ô','O'),'Ü','U'), 'Ç','C' ) LIKE ?" ;
         String query = "SELECT * FROM CIS_bdpm WHERE " +
-                "Denomination_du_medicament LIKE ? AND " +
+                "Denomination_du_medicament LIKE ? AND " + //comme une requete prepare on ne met pas les valeurs en dur on met ?
                 "Forme_pharmaceutique LIKE ? AND " +
                 "Titulaires LIKE ? AND " +
                 "Code_CIS IN (" + SQLSubstance + ") " +
                 finSQL;
-        Cursor cursor = db.rawQuery(query, selectionArgs.toArray(new String[0]));
+        // les valeurs a remplacer dds la requete
+        Cursor cursor = db.rawQuery(query, selectionArgs.toArray(new String[0]));//cursor contient le resultat de query c la requete SQL
         if (cursor.moveToFirst()) { //il est plein
             do {
+                // recupere les valeurs de la ligne actuelle
                 int codeCIS = cursor.getInt(cursor.getColumnIndex("Code_CIS"));
                 String denominationMedicament = cursor.getString(cursor.getColumnIndex("Denomination_du_medicament"));
                 String formePharmaceutiqueMedicament = cursor.getString(cursor.getColumnIndex("Forme_pharmaceutique"));
                 String voiesAdminMedicament = cursor.getString(cursor.getColumnIndex("Voies_dadministration"));
                 String titulairesMedicament = cursor.getString(cursor.getColumnIndex("Titulaires"));
                 String statutAdminMedicament = cursor.getString(cursor.getColumnIndex("Statut_administratif_de_lAMM"));
-
+                // parcour ligne apres ligne en recuperer chaque valeur
                 Medicament medicament = new Medicament(); // instancie une instance de la classe medicament
-                medicament.setCodeCIS(codeCIS); //je rentre ds cet objet la valeur codeCIS que le user a entrer grace a la fonction set qui modifie
+                medicament.setCodeCIS(codeCIS); //je rentre ds cet objet la valeur codeCIS que le user a entrer grace a la fonction set qui modifie (dans la class medicament)
                 medicament.setDenomination(denominationMedicament); // pareil pour denominationMedicament
                 medicament.setFormePharmaceutique(formePharmaceutiqueMedicament);
                 medicament.setVoiesAdmin(voiesAdminMedicament);
@@ -166,7 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 medicament.setStatutAdministratif(statutAdminMedicament);
                 medicament.setNbMolecule(getNbMollecules(codeCIS));
                 medicamentList.add(medicament); // ajoute a chaque fois le medicament ds une liste parce que sinon a chaque tour de boucle il ecrase le precedent
-            } while (cursor.moveToNext()); //tant qu'il n'est pas vide
+            } while (cursor.moveToNext()); //tant qu'il n'est pas vide et qu'il n'est pas arrivé a la fin
         } else {
             Toast.makeText(mycontext, "Aucun résultat", Toast.LENGTH_LONG).show();//toast affiche makeText class java qui existe deja qui permet d'afficher du text
         }
@@ -201,10 +203,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> getDistinctVoiesAdmin() {
         List<String> voiesAdminList = new ArrayList<>(); //declare une liste
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT DISTINCT upper(Voies_dadministration) FROM CIS_bdpm WHERE Voies_dadministration = NOT LIKE '%;%' ORDER BY Voies_dadministration", null);
+        Cursor cursor = db.rawQuery("SELECT DISTINCT upper(Voies_dadministration) FROM CIS_bdpm WHERE Voies_dadministration NOT LIKE '%;%' ORDER BY Voies_dadministration", null);
         // upper transforme en majuscules
         //retourne les differentes voies admin qui existent
-        voiesAdminList.add(PREMIERE_VOIE);
+        voiesAdminList.add(PREMIERE_VOIE); //ajoute a la liste tt ce quon a recuperer
         if (cursor.moveToFirst()){
             do {
                 String voieAdmin = cursor.getString(0).toString();
@@ -216,6 +218,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return voiesAdminList;
         }
+    public List<String> getCompositionMedicament(int codeCIS) {
+        List<String> compositionList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase(); //Lire la BDD
+        Cursor cursor = db.rawQuery("SELECT * FROM CIS_compo_bdpm WHERE Code_CIS = ?", new String[]{String.valueOf(codeCIS)});//Syntaxe pour requete SQL
+        int i=0;
+        if (cursor.moveToFirst()) { //Parcourir un tableau
+            do {
+                i++;
+                String substance = cursor.getString(cursor.getColumnIndex("Denomination_substance"));//Recupere ds substance la valeur que je trouve dans la colonne denomination substance et je transforme en chaine de char
+                String dosage = cursor.getString(cursor.getColumnIndex("Dosage_substance"));
+                compositionList.add(i+":"+substance + "(" + dosage + ")");
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return compositionList;
+    }
+
+
+    public List<String> getPresentationMedicament(int codeCIS) {
+        List<String> presentationList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor =  db.rawQuery("SELECT Libelle_presentation FROM CIS_CIP_bdpm WHERE Code_CIS = ?", new String[]{String.valueOf(codeCIS)});
+        int i=0;
+        if (cursor.moveToFirst()) {
+            do {
+                i++;
+                String presentation = cursor.getString(cursor.getColumnIndex("Libelle_presentation"));
+                presentationList.add(i+":"+presentation);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return presentationList;
+    }
 
 
 }

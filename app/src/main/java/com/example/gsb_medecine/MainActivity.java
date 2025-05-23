@@ -1,6 +1,9 @@
 package com.example.gsb_medecine;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -22,11 +25,12 @@ import java.util.List;
 
 import kotlin.reflect.KFunction;
 
-public class MainActivity extends AppCompatActivity { //extends qd elle herite de qqun
+public class MainActivity extends AppCompatActivity { //extends qd elle herite de qqun class java générée de base
 
     // on commence par declarer les attributs (comme des variables : typeCommenceParMaj + nomDeVariable)
-    private static final String PREF_NAME = "UserPrefs"; //on a créé un attribut PREF_NAME de la classe MainActivity
-    private static final String KEY_USER_STATUS = "UserStatus";
+    private static final String PREF_NAME = "UserPrefs";
+    private static final String KEY_USER_STATUS = "userStatus";
+
     private EditText editTextDenominationMedicament,editTextFormePharmaceutique,editTextTitulaire,editTextDenominationSubstance;
     private Button buttonRechercher,buttonDeconnexion,buttonQuitter;
     private ListView listViewResults;
@@ -49,6 +53,15 @@ public class MainActivity extends AppCompatActivity { //extends qd elle herite d
         listViewResults = findViewById(R.id.list_view_result);
         spinnerVoiesAdministration = findViewById(R.id.spinner_voix_administration);
 
+        //fonction qui gere la redirection
+        if (!isUserAuthenticated()){
+            Intent intent = new Intent(this,Authentification.class);
+            //class java pour fr une redirection avec class actuelle et class de redirection
+            startActivity(intent);
+            finish();
+        }
+
+
         dbHelper = new DatabaseHelper(this); //initialise la databaseHelper
 
         // Set up the spinner with Voies_dadministration data
@@ -70,7 +83,7 @@ public class MainActivity extends AppCompatActivity { //extends qd elle herite d
                 // Get the selected item
                 Medicament selectedMedicament = (Medicament) adapterView.getItemAtPosition(position);
                 // Show composition of the selected medicament
-                //afficherCompositionMedicament(selectedMedicament);
+                afficherCompositionMedicament(selectedMedicament);
             }
         }
         );
@@ -100,10 +113,10 @@ public class MainActivity extends AppCompatActivity { //extends qd elle herite d
         }
     }
 
-    private boolean isUserAuthenticated() { // premiere methode
+    private boolean isUserAuthenticated() { // premiere methode qui permet de verifier qu'un user est connecte
         SharedPreferences preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         String UserStatus = preferences.getString(KEY_USER_STATUS, "");
-        return "Authentification = ok".equals(UserStatus);
+        return "Authentification = OK".equals(UserStatus);
     }
 
 
@@ -119,7 +132,60 @@ public class MainActivity extends AppCompatActivity { //extends qd elle herite d
         listViewResults.setAdapter(adapter); // espace qui permettra d afficher la liste des medicaments recherchés
         //setText pour modifier
     }
+    public void deconnexion(View view) {
+        setUserStatus("authentification=KO");
+        Intent authIntent = new Intent(this, Authentification.class);
+        startActivity(authIntent);
+        finish();
+    }
 
+    public void quitter(View view) {
+        finishAffinity();
+    }
+
+    private void setUserStatus(String status) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_USER_STATUS, status);
+        editor.apply();
+    }
+
+    private void afficherCompositionMedicament(Medicament medicament) {
+        List<String> composition = dbHelper.getCompositionMedicament(medicament.getCodeCIS());
+        List<String> presentation = dbHelper.getPresentationMedicament(medicament.getCodeCIS());
+
+        // Afficher la composition du médicament dans une boîte de dialogue ou autre méthode d'affichage
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Composition et présentation de " + medicament.getDenomination());
+        StringBuilder boiteText = new StringBuilder();
+
+        if (composition.isEmpty()) {
+            boiteText.append("Pas de composition").append("\n");
+        } else {
+            boiteText.append("Composition : \n");
+            for (String item : composition) {
+                boiteText.append(item).append("\n");
+            }
+
+            if (presentation.isEmpty()) {
+                boiteText.append("Pas de presentation").append("\n");
+            } else {
+                boiteText.append("Présentation : \n");
+                for (String item : presentation) {
+                    boiteText.append(item).append("\n");
+                }
+                builder.setMessage(boiteText.toString());
+            }
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
 
 
 }

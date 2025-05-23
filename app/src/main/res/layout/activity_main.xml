@@ -10,35 +10,34 @@
 
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Dénomination du médicament"
         android:id="@+id/edit_text_denominationdumedicament"
         />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Forme pharmaceutique"
         android:id="@+id/edit_text_formepharmaceutique"
         />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Titulaire"
         android:id="@+id/edit_text_titulaire"
         />
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="Dénomination substance"
         android:id="@+id/edit_text_denominationsubstance"
-    />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Dénomination substance" />
 
     <Spinner
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="voix d'administration"
         android:id="@+id/spinner_voix_administration"
@@ -55,8 +54,8 @@
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_height="0dp"
         android:id="@+id/list_view_result"
     />
 
@@ -70,6 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Deconnexion"
+        android:onClick="deconnexion"
         android:id="@+id/btn_deconnexion"
         />
 
@@ -77,6 +77,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:onClick="quitter"
         android:text="Quitter l'application"
         android:id="@+id/btn_quitter"
 
